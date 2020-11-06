@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Surf Trip Planner</title>
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h1>Great Lakes Surf Trip Planner</h1>
+    <div id="map"></div>
+    <div class="container">
+        <section id="results" class="hidden">
+          <ul id="results-list">
+          </ul>
+        </section>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
+    <script defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2SftXzWm8fTk0GqMSs9vTwa3zVYIj6bE&libraries=geometry,places&callback=initMap">
+    </script>
+</body>
+</html>
