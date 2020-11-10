@@ -1,9 +1,9 @@
 'use strict';
 // to-do
-  // i need to define a place by search term (I'll take search terms from my own array of created location names)
-  // then one that place is defined, i can get place details (images, lat/long, etc?)
-  // then with the defined lat/long, I can put that into the stormGlass url
-  // then with some sort of javascript "find current date/time" function, I'll enter that date time into stormglass url
+  // when a marker is clicked, I need to get the lat/lng of that location and pass it to url
+    // this means i need to associate the surf spots locations to a marker click
+    // or (new idea), get data for all locations, then hide/show as necessary with function
+
 
 const surfSpots = [
   {
@@ -67,10 +67,10 @@ const surfSpots = [
     url: 'https://www.google.com/maps/place/Charlevoix+South+Pier+Head/@45.3202493,-85.2736611,15z/data=!3m1!4b1!4m5!3m4!1s0x4d4aedb63e4a5159:0xc521b2e321d87ee3!8m2!3d45.3202345!4d-85.2649278'
   },
   {
-    locationName: 'Bay City MI',
-    lat: 43.5813511,
-    lng: -83.9534031,
-    url: 'https://www.google.com/maps/place/Bay+City,+MI/@43.5813511,-83.9534031,12z/data=!3m1!4b1!4m5!3m4!1s0x8823e104be406d25:0x34d0a227f2ae3802!8m2!3d43.5944677!4d-83.8888647'
+    locationName: 'Bay City State Park MI',
+    lat: 43.6669034,
+    lng: -83.9057863,
+    url: 'https://www.google.com/maps/place/Bay+City+State+Park/@43.6669034,-83.9057863,15z/data=!4m5!3m4!1s0x0:0x3e7d08ef5af11bc3!8m2!3d43.6669034!4d-83.9057863'
   },
   {
     locationName: 'Port Austin MI',
@@ -110,29 +110,28 @@ const surfSpots = [
   }
 ];
 
-// need a function that takes lat/lng from array on location click, and puts into getSgData function
-
 // FETCH DATA FROM API's
 let timeFormatted = '';
 function getCurrentDate() {
   const timeUTCms = Date.now(); //method returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
   const timeUTCiso = new Date(timeUTCms).toISOString(); // converts ms to iso string "2020-11-08T22:15:49.956Z"
-  //const year = new Date(timeUTCms).getUTCFullYear(); // year
-  //const month = new Date(timeUTCms).getUTCMonth() + 1; // month (january is 0)
-  //const day = new Date(timeUTCms).getUTCDate(); // day
-  //const hours = new Date(timeUTCms).getUTCHours(); // hours
-  //const minutes = new Date(timeUTCms).getUTCMinutes(); // minutes
-  //const seconds = new Date(timeUTCms).getUTCSeconds(); // seconds
-  //const milliseconds = new Date(timeUTCms).getUTCMilliseconds(); // milliseconds
   console.log(timeUTCiso);
-  //console.log(year);
-  //console.log(month);
-  //console.log(day);
-  //console.log(hours);
-  //console.log(minutes);
-  //console.log(seconds);
-  //console.log(milliseconds);
-  //let timeFormatted = '';
+  /*
+  const year = new Date(timeUTCms).getUTCFullYear(); // year
+  const month = new Date(timeUTCms).getUTCMonth() + 1; // month (january is 0)
+  const day = new Date(timeUTCms).getUTCDate(); // day
+  const hours = new Date(timeUTCms).getUTCHours(); // hours
+  const minutes = new Date(timeUTCms).getUTCMinutes(); // minutes
+  const seconds = new Date(timeUTCms).getUTCSeconds(); // seconds
+  const milliseconds = new Date(timeUTCms).getUTCMilliseconds(); // milliseconds
+  console.log(year);
+  console.log(month);
+  console.log(day);
+  console.log(hours);
+  console.log(minutes);
+  console.log(seconds);
+  console.log(milliseconds);
+  */
   let timeFormatted1 = '';
   let timeFormatted2 = '';
   let timeFormatted3 = '';
@@ -147,7 +146,7 @@ function getCurrentDate() {
     timeFormatted3 += timeUTCiso[i];
   }
   //for (let i=20; i<22; i++) {
-  //  timeFormatted4 += timeUTCiso[i]; // milliseconds (not working in sg fetch url for some reason. maybe these are formatted)
+  //  timeFormatted4 += timeUTCiso[i]; // milliseconds (not working in sg fetch url for some reason. maybe these are formatted incorrectly)
   //}
   console.log(timeFormatted1);
   console.log(timeFormatted2);
@@ -155,74 +154,48 @@ function getCurrentDate() {
   //console.log(timeFormatted4);
   timeFormatted = timeFormatted1 + '%3A' + timeFormatted2 + '%3A' + timeFormatted3 + '%2B' + '00' + '%3A00';
   console.log(timeFormatted);
-} 
-  
-
-
-function getSgData() {
-  // stormglass.io
-  const lat = surfSpots[0].lat; // 41.6906432; // 'Beverly Shores IN'
-  const lng = surfSpots[0].lng; //-87.0063084;
-  const source = 'sg'; // weather data source (stormglass)
-  //const start = '2020-11-09T12%3A15%3A00%2B00%3A00'; // Timestamp in UTC for first forecast hour (2018-11-23T10%3A00%3A00%2B00%3A00 => (%3A = :), (%2B = +) => 2018-11-23T10:00:00+00:00)
-  //const end = '2020-11-09T12%3A15%3A00%2B00%3A00'; // Timestamp in UTC for last forecast hour
-  //console.log(start);
-  let start = timeFormatted;
-  let end = timeFormatted;
-  console.log(start);
-  const params = 'windSpeed,windDirection,swellHeight,waveHeight,airTemperature,waterTemperature';
-  const stormGlassURL = `https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lng}&start=${start}&end=${end}&source=${source}&params=${params}`; 
-  fetch(stormGlassURL, {
-    headers: {
-      'Authorization': '3b1a2f0c-1d15-11eb-8db0-0242ac130002-3b1a2fac-1d15-11eb-8db0-0242ac130002' // derek.arrotta@gmail.com
-      //'Authorization': '97763c44-1f92-11eb-a5a9-0242ac130002-97763d02-1f92-11eb-a5a9-0242ac130002' // arro6582@gmail.com
-    }
-    })
-      .then(response => response.json())
-      .then(jsonSgData => {
-        // Do something with response data.
-        displaySgData(jsonSgData)
-        console.log(surfSpots[0].lat);
-        console.log(jsonSgData.meta.lat);
-      });
 }
 
-  /*
-  function getGoogleSearchPlace() {
-    // example url
-    // const googlePlaceSearchURL = 
-    // 'https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&
-    // inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=YOUR_API_KEY';
-    const googleMapsKey = 'AIzaSyA2SftXzWm8fTk0GqMSs9vTwa3zVYIj6bE';
-    const locations = 
-    [
-      'Beverly%20Shores%20Indiana',
-      'Michigan%20City%20Indiana',
-      'New%20Buffalo%20Michigan'
-    ];
-    const inputtype = 'textquery';
-    const fields = 'photos,formatted_address,name,rating,opening_hours,geometry';
-    
-    for (let i=0; i<locations.length; i++) {
-      // loop through input and create multiple URLs to fetch (put fetch into loop?? i variable below?)
-      const input = locations[i];
-      const googlePlaceSearchURL = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${input}&inputtype=${inputtype}&fields=${fields}&key=${googleMapsKey}`;
-      console.log(googlePlaceSearchURL);
-      
-      fetch(googlePlaceSearchURL) 
-      //{ 
-      //  headers: { 'Access-Control-Allow-Origin': '*' }
-      //}
-      //)
-        //.then(googleSearchResponse => googleSearchResponse.json())
-        .then(googleSearchResponseJson => {
-          // Do something with response data.
-          displayGoogleSearchData(googleSearchResponseJson)
-        });
-    }
-  }
+
+/*
+function getLatLngFromMarkerClick() {
+  $('#map').on('click', marker[0], function() {
+    console.log(marker[0]);
+    //if (surfSpots[0].locationName === marker[0].getTitle()) {
+      console.log(marker[0].getTitle());
+      let lat = surfSpots[0].lat;
+      let lng = surfSpots[0].lng;
+      console.log(lat);
+      console.log(lng);
+    //}
+  });  
+}
+$(getLatLngFromMarkerClick);
 */
 
+function getSgData() {
+  const source = 'sg'; // weather data source (stormglass)
+  let start = timeFormatted; //const start = '2020-11-09T12%3A15%3A00%2B00%3A00'; // Timestamp in UTC for first forecast hour (2018-11-23T10%3A00%3A00%2B00%3A00 => (%3A = :), (%2B = +) => 2018-11-23T10:00:00+00:00)
+  let end = timeFormatted; //const end = '2020-11-09T12%3A15%3A00%2B00%3A00'; // Timestamp in UTC for last forecast hour
+  const params = 'windSpeed,windDirection,swellHeight,waveHeight,airTemperature,waterTemperature';
+  const lat = surfSpots[0].lat; // need to define lat/lng based off of marker click (can't leave hardcoded)
+  const lng = surfSpots[0].lng;
+  console.log(start);
+  // stormglass.io
+    const stormGlassURL = `https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lng}&start=${start}&end=${end}&source=${source}&params=${params}`;
+  
+    fetch(stormGlassURL, {
+      headers: {
+        //'Authorization': '3b1a2f0c-1d15-11eb-8db0-0242ac130002-3b1a2fac-1d15-11eb-8db0-0242ac130002' // derek.arrotta@gmail.com
+        'Authorization': '97763c44-1f92-11eb-a5a9-0242ac130002-97763d02-1f92-11eb-a5a9-0242ac130002' // arro6582@gmail.com
+      }
+      })
+        .then(response => response.json())
+        .then(jsonSgData => {
+          displaySgData(jsonSgData)
+        });
+}
+ 
 
 // DISPLAY DATA FROM API FETCH
 function displaySgData(jsonSgData) {
@@ -246,18 +219,15 @@ function displaySgData(jsonSgData) {
   $('#results').removeClass('hidden');
 }
 
-//function displayGoogleSearchData(googleSearchResponseJson) {
-//  console.log(googleSearchResponseJson);
-//}
-
 
 // Initialize and add the map
+//make marker a global variable to use
 let marker;
 function initMap() {
   // let marker = new google.maps.Marker();
   // center map on defined location
   const bigRapids = { lat: 43.6994926, lng: -85.4971681 }; // MI (to center the map)
-  const map = new google.maps.Map(document.getElementById('map'), {
+  let map = new google.maps.Map(document.getElementById('map'), {
     zoom: 6,
     center: bigRapids,
   });
@@ -269,22 +239,25 @@ function initMap() {
       map: map,
       title: surfSpots[i].locationName,
     });
-    //const infowindow = new google.maps.InfoWindow({
-    //  content: surfSpots[i].locationName,
-    //});
+
+    console.log(marker);
+    
     //marker.addListener('click', () => {
-    //  infowindow.open(map, marker);
+    let markerTitle = marker.getTitle();
+    console.log(markerTitle);
     //});
     marker.addListener('click', () => {
-        $(runFunctions);
+    $(runFunctions);
     });
   };
+  
 };
 
 
 // event listener function (just running function for now. need to add click function for when you click on map location)
 function runFunctions() {
   getCurrentDate();
+  //getLatLngFromMarkerClick();
   getSgData();
   //initMap();
   //getGoogleSearchPlace();
