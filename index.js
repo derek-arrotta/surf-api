@@ -1,10 +1,13 @@
 'use strict';
 // to-do
-  // when a marker is clicked, I need to get the lat/lng of that location and pass it to url
-    // this means i need to associate the surf spots locations to a marker click
-    // or (new idea), get data for all locations, then hide/show as necessary with function
+// unscrew my code to start more simply  
+// create dropdown menu of locations.
+    // choose location and feed info into fetch url
+  // display info based off of location
+  // show one location at a time on map
+  // put data to left of map (desktop), and data below on mobile. 
 
-
+  // define surfspots by lat/lng, location name, and url (for reference [this is how i got the lat/lng manually])
 const surfSpots = [
   {
     locationName: 'Beverly Shores IN',
@@ -110,7 +113,7 @@ const surfSpots = [
   }
 ];
 
-// FETCH DATA FROM API's
+// get current time in UTC and format for stormglass data fetch
 let timeFormatted = '';
 function getCurrentDate() {
   const timeUTCms = Date.now(); //method returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
