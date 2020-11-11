@@ -217,6 +217,7 @@ function initMap() {
   let map = new google.maps.Map(document.getElementById('map'), {
     zoom: 6,
     center: bigRapids,
+    mapTypeId: 'hybrid'
   });
   // define/move marker by dropdown selection
   let marker = new google.maps.Marker();
