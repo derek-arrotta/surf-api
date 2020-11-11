@@ -168,13 +168,20 @@ function getSgData(latInput, lngInput) {
       */
      .then(response => {
         if (response.ok) {
-         return response.json();
+          $('#js-error-message').text(''); // if error message exists from previous location, clear out
+          return response.json();
         }
         throw new Error(response.statusText);
       })
     .then(jsonSgData => displaySgData(jsonSgData))
     .catch(err => {
-      $('#js-error-message').text(`Something went wrong: ${err.message}`);
+      $('#js-error-message').text(''); // if error message exists from previous location, clear out
+      if ( err.message === `Cannot read property 'sg' of undefined`) {
+        $('#js-error-message').text(`Something went wrong: Waves are flat :(...no data to show`);
+      }
+      else {
+        $('#js-error-message').text(`Something went wrong: ${err.message}`);
+      }
     });
 }
  
