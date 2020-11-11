@@ -160,10 +160,22 @@ function getSgData(latInput, lngInput) {
       'Authorization': '97763c44-1f92-11eb-a5a9-0242ac130002-97763d02-1f92-11eb-a5a9-0242ac130002' // arro6582@gmail.com
     }
     })
+      /*
       .then(response => response.json())
       .then(jsonSgData => {
         displaySgData(jsonSgData)
       });
+      */
+     .then(response => {
+        if (response.ok) {
+         return response.json();
+        }
+        throw new Error(response.statusText);
+      })
+    .then(jsonSgData => displaySgData(jsonSgData))
+    .catch(err => {
+      $('#js-error-message').text(`Something went wrong: ${err.message}`);
+    });
 }
  
 
