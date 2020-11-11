@@ -1,13 +1,10 @@
 'use strict';
 // to-do
-// unscrew my code to start more simply  
-// create dropdown menu of locations.
-    // choose location and feed info into fetch url
-  // display info based off of location
-  // show one location at a time on map
   // put data to left of map (desktop), and data below on mobile. 
 
-  // define surfspots by lat/lng, location name, and url (for reference [this is how i got the lat/lng manually])
+
+// MANUALLY DEFINED SURF SPOTS
+// define surfspots by lat/lng, location name, and url (url is only for reference [this is how i got the lat/lng manually..i.e. copied from url ""])
 const surfSpots = [
   {
     locationName: 'Beverly Shores IN',
@@ -64,10 +61,10 @@ const surfSpots = [
     url: 'https://www.google.com/maps/place/Empire+Beach/@44.8120592,-86.0768625,15z/data=!3m1!4b1!4m5!3m4!1s0x881e1b83d130a2d1:0xac339e33ee21b6de!8m2!3d44.8120443!4d-86.0681292'
   },
   {
-    locationName: 'Charlevoix South Pier Head MI',
-    lat: 45.3202493,
-    lng: -85.2736611,
-    url: 'https://www.google.com/maps/place/Charlevoix+South+Pier+Head/@45.3202493,-85.2736611,15z/data=!3m1!4b1!4m5!3m4!1s0x4d4aedb63e4a5159:0xc521b2e321d87ee3!8m2!3d45.3202345!4d-85.2649278'
+    locationName: 'Charlevoix South Pier MI',
+    lat: 45.320243,
+    lng: -85.2649097,
+    url: 'https://www.google.com/maps/place/Charlevoix+South+Pier+Light+Station/@45.320243,-85.2649097,15z/data=!4m5!3m4!1s0x0:0x97dd5c1112b47765!8m2!3d45.320243!4d-85.2649097'
   },
   {
     locationName: 'Bay City State Park MI',
@@ -113,159 +110,138 @@ const surfSpots = [
   }
 ];
 
+
+
+// GET CURRENT TIME AND FORMAT
 // get current time in UTC and format for stormglass data fetch
-let timeFormatted = '';
+let timeFormatted = ''; // define time formatted as a global variable for use in getSgData
 function getCurrentDate() {
   const timeUTCms = Date.now(); //method returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
-  const timeUTCiso = new Date(timeUTCms).toISOString(); // converts ms to iso string "2020-11-08T22:15:49.956Z"
-  console.log(timeUTCiso);
-  /*
-  const year = new Date(timeUTCms).getUTCFullYear(); // year
-  const month = new Date(timeUTCms).getUTCMonth() + 1; // month (january is 0)
-  const day = new Date(timeUTCms).getUTCDate(); // day
-  const hours = new Date(timeUTCms).getUTCHours(); // hours
-  const minutes = new Date(timeUTCms).getUTCMinutes(); // minutes
-  const seconds = new Date(timeUTCms).getUTCSeconds(); // seconds
-  const milliseconds = new Date(timeUTCms).getUTCMilliseconds(); // milliseconds
-  console.log(year);
-  console.log(month);
-  console.log(day);
-  console.log(hours);
-  console.log(minutes);
-  console.log(seconds);
-  console.log(milliseconds);
-  */
+  const timeUTCiso = new Date(timeUTCms).toISOString(); // converts milliseconds to iso string - ex: "2020-11-08T22:15:49.956Z"
+  console.log(timeUTCiso); // compare this output to timeFormatted to make sure its correct
+  // break up 'timeUTCiso' into parts for final timeFormatted compilation
   let timeFormatted1 = '';
   let timeFormatted2 = '';
   let timeFormatted3 = '';
-  //let timeFormatted4 = '';
+  // part 1 (where timeUTCiso[i] adds a letter to timeFormatted1 each time i counts up... "2020-11-08T22")
   for (let i=0; i<13; i++) {
     timeFormatted1 += timeUTCiso[i];
   }
+  // part 2 ("15")
   for (let i=14; i<16; i++) {
     timeFormatted2 += timeUTCiso[i];
   }
+  // part 3 ("49")
   for (let i=17; i<19; i++) {
     timeFormatted3 += timeUTCiso[i];
   }
-  //for (let i=20; i<22; i++) {
-  //  timeFormatted4 += timeUTCiso[i]; // milliseconds (not working in sg fetch url for some reason. maybe these are formatted incorrectly)
-  //}
-  console.log(timeFormatted1);
-  console.log(timeFormatted2);
-  console.log(timeFormatted3);
-  //console.log(timeFormatted4);
+  // time formatted is the summation of parts above, where '%3A'=':', and '%2B'='+' (formatting for sg fetch url)
   timeFormatted = timeFormatted1 + '%3A' + timeFormatted2 + '%3A' + timeFormatted3 + '%2B' + '00' + '%3A00';
-  console.log(timeFormatted);
 }
 
 
-/*
-function getLatLngFromMarkerClick() {
-  $('#map').on('click', marker[0], function() {
-    console.log(marker[0]);
-    //if (surfSpots[0].locationName === marker[0].getTitle()) {
-      console.log(marker[0].getTitle());
-      let lat = surfSpots[0].lat;
-      let lng = surfSpots[0].lng;
-      console.log(lat);
-      console.log(lng);
-    //}
-  });  
-}
-$(getLatLngFromMarkerClick);
-*/
 
-function getSgData() {
+// GET STORMGLASS DATA
+function getSgData(latInput, lngInput) {
   const source = 'sg'; // weather data source (stormglass)
-  let start = timeFormatted; //const start = '2020-11-09T12%3A15%3A00%2B00%3A00'; // Timestamp in UTC for first forecast hour (2018-11-23T10%3A00%3A00%2B00%3A00 => (%3A = :), (%2B = +) => 2018-11-23T10:00:00+00:00)
-  let end = timeFormatted; //const end = '2020-11-09T12%3A15%3A00%2B00%3A00'; // Timestamp in UTC for last forecast hour
+  let start = timeFormatted; // ex: '2020-11-09T12%3A15%3A00%2B00%3A00'; // Timestamp in UTC for first forecast hour (2018-11-23T10%3A00%3A00%2B00%3A00 => (%3A = :), (%2B = +) => 2018-11-23T10:00:00+00:00)
+  let end = timeFormatted; // ex: '2020-11-09T12%3A15%3A00%2B00%3A00'; // Timestamp in UTC for last forecast hour
   const params = 'windSpeed,windDirection,swellHeight,waveHeight,airTemperature,waterTemperature';
-  const lat = surfSpots[0].lat; // need to define lat/lng based off of marker click (can't leave hardcoded)
-  const lng = surfSpots[0].lng;
-  console.log(start);
-  // stormglass.io
-    const stormGlassURL = `https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lng}&start=${start}&end=${end}&source=${source}&params=${params}`;
-  
-    fetch(stormGlassURL, {
-      headers: {
-        //'Authorization': '3b1a2f0c-1d15-11eb-8db0-0242ac130002-3b1a2fac-1d15-11eb-8db0-0242ac130002' // derek.arrotta@gmail.com
-        'Authorization': '97763c44-1f92-11eb-a5a9-0242ac130002-97763d02-1f92-11eb-a5a9-0242ac130002' // arro6582@gmail.com
-      }
-      })
-        .then(response => response.json())
-        .then(jsonSgData => {
-          displaySgData(jsonSgData)
-        });
+  console.log(start); // compare to "timeUTCiso" to make sure its correct (except for milliseconds part). milliseconds should be 00.
+  let lat = latInput;
+  let lng = lngInput;
+  console.log(lat);
+  console.log(lng);
+  // stormglass fetch
+  const stormGlassURL = `https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lng}&start=${start}&end=${end}&source=${source}&params=${params}`;
+  fetch(stormGlassURL, {
+    headers: {
+      //'Authorization': '3b1a2f0c-1d15-11eb-8db0-0242ac130002-3b1a2fac-1d15-11eb-8db0-0242ac130002' // derek.arrotta@gmail.com
+      'Authorization': '97763c44-1f92-11eb-a5a9-0242ac130002-97763d02-1f92-11eb-a5a9-0242ac130002' // arro6582@gmail.com
+    }
+    })
+      .then(response => response.json())
+      .then(jsonSgData => {
+        displaySgData(jsonSgData)
+      });
 }
  
 
+
 // DISPLAY DATA FROM API FETCH
 function displaySgData(jsonSgData) {
-  // empty old results in html index
+  // check jsonSgData
   console.log(jsonSgData);
+  // empty old results in html index
   $('#results-list').empty();
-  // loops through data to show on web page (to do: link lat/lng to google to display location name)
+  // loops through sg data to show on web page
   for (let i=0; i<jsonSgData.hours.length; i++) {
     $('#results-list').append(
-      `<h2>Surf Location</h2>
-      <li>
-      <p>Wind Direction: ${jsonSgData.hours[i].windDirection.sg} degrees</p>
-      <p>Wind Speed: ${jsonSgData.hours[i].windSpeed.sg} m/s</p>
-      <p>Swell Height: ${jsonSgData.hours[i].swellHeight.sg} m</p>
-      <p>Wave Height: ${jsonSgData.hours[i].waveHeight.sg} m</p>
-      <p>Air Temperature: ${jsonSgData.hours[i].airTemperature.sg} °C</p>
-      <p>Water Temperature: ${jsonSgData.hours[i].waterTemperature.sg} °C</p>
-      </li>`
+      `<li>Wind Direction: ${jsonSgData.hours[i].windDirection.sg} degrees</li>
+      <li>Wind Speed: ${jsonSgData.hours[i].windSpeed.sg} m/s</li>
+      <li>Swell Height: ${jsonSgData.hours[i].swellHeight.sg} m</li>
+      <li>Wave Height: ${jsonSgData.hours[i].waveHeight.sg} m</li>
+      <li>Air Temperature: ${jsonSgData.hours[i].airTemperature.sg} °C</li>
+      <li>Water Temperature: ${jsonSgData.hours[i].waterTemperature.sg} °C</li>`
   )};
   //display the results section  
   $('#results').removeClass('hidden');
 }
 
 
-// Initialize and add the map
-//make marker a global variable to use
-let marker;
+
+// GOOGLE MAP FUNCTIONS
+// initialize map, and add markers when dropdown selection is made
 function initMap() {
-  // let marker = new google.maps.Marker();
   // center map on defined location
   const bigRapids = { lat: 43.6994926, lng: -85.4971681 }; // MI (to center the map)
   let map = new google.maps.Map(document.getElementById('map'), {
     zoom: 6,
     center: bigRapids,
   });
-
-  // position location markers to display
-  for (let i=0; i<surfSpots.length; i++) {
-    marker = new google.maps.Marker({
-      position: { lat: surfSpots[i].lat, lng: surfSpots[i].lng },
-      map: map,
-      title: surfSpots[i].locationName,
-    });
-
-    console.log(marker);
-    
-    //marker.addListener('click', () => {
-    let markerTitle = marker.getTitle();
-    console.log(markerTitle);
-    //});
-    marker.addListener('click', () => {
-    $(runFunctions);
-    });
-  };
-  
-};
-
-
-// event listener function (just running function for now. need to add click function for when you click on map location)
-function runFunctions() {
-  getCurrentDate();
-  //getLatLngFromMarkerClick();
-  getSgData();
-  //initMap();
-  //getGoogleSearchPlace();
+  // define/move marker by dropdown selection
+  let marker = new google.maps.Marker();
+  $('select').on('change', event => { 
+    event.preventDefault(); 
+    let searchTermGmaps = $('#location-list').val();
+    for (let i=0; i<surfSpots.length; i++) {
+      if (searchTermGmaps === surfSpots[i].locationName) {
+        let latGmaps = surfSpots[i].lat;
+        let lngGmaps = surfSpots[i].lng;
+        marker.setMap(null); //clear previous marker if it exists
+        marker = new google.maps.Marker({
+          position: { lat: latGmaps, lng: lngGmaps },
+          map: map,
+          title: searchTermGmaps,
+        });
+      }
+    }
+  });
 }
 
 
+
+// START/RUN FUNCTIONS
+// run all functions with dropdown selection & event listener
+function runFunctions() {
+  // when selection is made on dropdown, do things below
+  $('select').on('change', event => { 
+    // prevent default function of form
+    event.preventDefault(); 
+    // define 'searchTerm' with html value from dropdown
+    let searchTermSg = $('#location-list').val();
+    // check search term value
+    console.log(searchTermSg);
+    // match search term to surf spot name, then define surf spot name lat/lng, then run get current date, then run get sg (stormglass) data with lat/lng inputs. 
+    for (let i=0; i<surfSpots.length; i++) {
+      if (searchTermSg === surfSpots[i].locationName) {
+        let latSg = surfSpots[i].lat;
+        let lngSg = surfSpots[i].lng;
+        getCurrentDate();
+        getSgData(latSg, lngSg);
+      }
+    }
+  });
+}
 //run functions
-//$(runFunctions);
+$(runFunctions);
