@@ -7,14 +7,22 @@
     <title>Surf Trip Planner</title>
     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&display=swap" rel="stylesheet">  
 </head>
 <body>
     <h1>Great Lakes Surf Data</h1>
     <form id="js-form">
-        <label for="location-list">select location to display data: </label>
+        <label for="location-list">
+            Most people don't know that surfing is possible in the Great Lakes!
+            This app is designed for those day trippers and weekend warriors who
+            want to chase waves in Detroit Metro and surrounding areas. Choose a
+            city in the dropdown menu to display data.
+        </label>
         <!-- <input type="text" list="location-list" name="search-term" id="js-search-term" required> -->
         <select name="location" id="location-list">
-            <option value="">please choose an option</option>
+            <option value="">---------please choose an option---------</option>
             <option value="Beverly Shores IN">Beverly Shores</option>
             <option value="Michigan City IN">Michigan City</option>
             <option value="New Buffalo MI">New Buffalo</option>
@@ -34,13 +42,16 @@
             <option value="Luna Pier MI">Luna Pier</option>
         </select>
     </form>
+    
     <p id="js-error-message" class="error-message"></p>
-    <div id="map"></div>
-    <div class="container">
-        <section id="results" class="hidden">
-          <ul id="results-list">
-          </ul>
-        </section>
+    <div class="flex-container">
+        <div id="map" class="item map-item"></div>
+        <div class="item data-item">
+            <section id="results" class="hidden">
+            <ul id="results-list">
+            </ul>
+            </section>
+        </div>
     </div>
     
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>

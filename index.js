@@ -213,10 +213,10 @@ function displaySgData(jsonSgData) {
 // initialize map, and add markers when dropdown selection is made
 function initMap() {
   // center map on defined location
-  const bigRapids = { lat: 43.6994926, lng: -85.4971681 }; // MI (to center the map)
+  const Harrison = { lat: 44.0168954, lng: -84.8429136 }; // MI (to center the map) 44.0168954,-84.8429136
   let map = new google.maps.Map(document.getElementById('map'), {
     zoom: 6,
-    center: bigRapids,
+    center: Harrison,
     mapTypeId: 'hybrid'
   });
   // define/move marker by dropdown selection
