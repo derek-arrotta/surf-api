@@ -30,7 +30,7 @@
     padding-left: 35px;
     padding-right: 20px;
     text-align: left;
-    color: rgb(49, 65, 11);
+    color: #31410b;
   }
 
   form {
@@ -56,7 +56,7 @@
     height: 400px; /* of map */
     width: 95%; /* of the web page (or flex container) */
     border-radius: 10px;
-    border-color: rgb(255, 255, 255);
+    border-color: #ffffff;
     border-style: ridge;
     border-width: 5px;
     margin-left: 5px;
@@ -69,14 +69,14 @@
 
   ul {
     text-align: left;
-    color: rgb(0, 0, 0);
+    color: #000000;
     padding-inline-start: 25px;
     list-style-type: none;
     font-family: 'Josefin Sans', sans-serif;
     /*background-color: #a2b69e;*/
     padding-top: 10px;
     padding-bottom: 10px;
-    color: rgb(49, 65, 11);
+    color: #31410b;
   }
 
   li {
