@@ -1,7 +1,6 @@
 # GREAT LAKES SURF DATA
 
-Can you surf in Michigan!? Surprisingly yes!...This app was built in mind for those Michigander day trippers and weekend warriors who want to chase the Great Lakes Surf with informative data. Choose a local city in the Michigan Area (dropdown menu), and get back weather, wave, and location data.
-[surf api](https://derek-arrotta.github.io/surf-api/)
+Can you surf in Michigan!? Surprisingly yes!...[This app](https://derek-arrotta.github.io/surf-api/) was built in mind for those Michigander day trippers and weekend warriors who want to chase the Great Lakes Surf with informative data. Choose a local city in the Michigan Area (dropdown menu), and get back weather, wave, and location data.
 
 ## Technology
 
@@ -15,8 +14,5 @@ Can you surf in Michigan!? Surprisingly yes!...This app was built in mind for th
 I learned a lot about scope in this project, and what it means to really execute on ideas. It can take a couple hours to come up with awesome ideas and a vision, but much longer to implement that grand vision. My MVP ended up being much smaller and humbler than I had orginally envisioned. 
 
 ## Screenshots
-
-### Intro
-![intro](images/screenshot-intro.png)
 
 <img src="app-screen-shot.png" width="500">
